@@ -347,7 +347,7 @@
         -webkit-backdrop-filter: blur(20px);
         backdrop-filter: blur(20px);
       }
-      .nav-top-row { display: flex !important; align-items: center; justify-content: space-between; }
+      .nav-top-row { display: flex !important; align-items: center; justify-content: space-between; height: 100%; }
       .nav-tabs { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; width: 100%; }
       .nav-tab { font-size: .55rem; padding: 6px 2px; text-align: center; border-radius: 8px; }
       .nav-cta { font-size: .7rem; padding: 7px 14px; }
@@ -442,7 +442,9 @@
   <!-- ── NAV ── -->
   <nav>
     <div class="nav-top-row">
-      <div class="logo">Void</div>
+      <div class="logo" style="display:flex;align-items:center;justify-content:center;height:100%">
+        <img src="7365-removebg-preview.png" alt="VOID" style="height:32px;width:auto;display:block;object-fit:contain;vertical-align:middle;" />
+      </div>
     </div>
     <div class="nav-tabs">
       <button class="nav-tab active" onclick="switchTab('home')">Home</button>
@@ -777,7 +779,9 @@
       </div>
     </div>
   <footer>
-    <div class="footer-logo">Void</div>
+    <div class="footer-logo">
+      <img src="7365-removebg-preview.png" alt="VOID" style="height:24px;width:auto;display:block;opacity:.8;" />
+    </div>
     <div class="footer-copy">© 2025 VOID Scripts — Not affiliated with Roblox Corporation</div>
     <div class="footer-links">
       <a href="#">Terms</a>
