@@ -604,23 +604,29 @@
     <div class="panel" id="panel-sounds">
       <div class="section">
         <div class="section-label">Sounds</div>
-        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px;">
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px;">
           <h2 class="section-title" style="margin-bottom:0;">Sound <span class="dim">Library.</span></h2>
-          <!-- Owner-Login Trigger (kleiner Link, unauffällig) -->
-          <span id="owner-login-trigger" style="font-size:.7rem;color:var(--muted);text-decoration:underline;text-underline-offset:3px;cursor:pointer;" onclick="openOwnerLogin()">Owner</span>
-          <span id="owner-logout" onclick="ownerLogout()">Logout</span>
+          <!-- + Button: only visible after owner login -->
+          <button id="owner-add-btn-inline" onclick="openUploadModal()"
+            style="display:none;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;background:var(--white);border:none;color:#000;font-size:1.3rem;font-weight:300;line-height:1;box-shadow:0 4px 16px rgba(255,255,255,.12);transition:transform .2s,box-shadow .2s;"
+            onmouseenter="this.style.transform='scale(1.12) rotate(90deg)'"
+            onmouseleave="this.style.transform='scale(1) rotate(0deg)'"
+            title="Add Sound">+</button>
+          <!-- Invisible owner trigger -->
+          <span id="owner-login-trigger" onclick="openOwnerLogin()" style="width:20px;height:20px;display:inline-block;opacity:0;cursor:default;"></span>
+          <span id="owner-logout" onclick="ownerLogout()" style="display:none;font-size:.68rem;color:var(--muted);text-decoration:underline;text-underline-offset:3px;cursor:pointer;">Logout</span>
         </div>
-        <p class="section-desc">Browse und preview alle VOID Sounds. Preview startet VoiceMod direkt.</p>
+        <p class="section-desc">Browse and preview all VOID sounds. Clicking play opens VoiceMod directly.</p>
 
         <!-- VoiceMod info notice -->
         <div class="voicemod-notice">
           <svg class="voicemod-notice-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          <span>Sounds öffnen <a href="https://www.voicemod.net" target="_blank">VoiceMod</a> beim Preview. Du brauchst VoiceMod installiert. Sounds werden vom Owner verwaltet.</span>
+          <span>Sounds open <a href="https://www.voicemod.net" target="_blank">VoiceMod</a> on play. You need VoiceMod installed to use sounds. Sounds are managed by the owner.</span>
         </div>
 
         <!-- Search -->
         <div class="sounds-search-wrap">
-          <input class="sounds-search" type="text" id="sounds-search" placeholder="Sound suchen..." oninput="filterSounds()" />
+          <input class="sounds-search" type="text" id="sounds-search" placeholder="Search sounds..." oninput="filterSounds()" />
         </div>
 
         <!-- Sound cards grid -->
@@ -629,60 +635,63 @@
         <!-- Empty state -->
         <div class="sounds-empty" id="sounds-empty" style="display:none;">
           <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-          <div>Kein Sound gefunden.</div>
+          <div>No sounds found.</div>
         </div>
       </div>
     </div>
-
-    <!-- ── OWNER ADD BUTTON (floating, nur für Owner) ── -->
-    <button id="owner-add-btn" onclick="openUploadModal()" title="Sound hinzufügen">+</button>
 
     <!-- ── OWNER LOGIN MODAL ── -->
     <div class="modal-overlay" id="modal-login">
       <div class="modal-box">
         <div class="modal-title">Owner Login</div>
-        <div class="modal-sub">Nur für den Owner. Passwort eingeben um fortzufahren.</div>
-        <div class="modal-error" id="login-error">Falsches Passwort.</div>
-        <input class="modal-field" type="password" id="owner-pw" placeholder="Passwort..." onkeydown="if(event.key==='Enter')ownerLogin()" />
-        <button class="modal-btn" onclick="ownerLogin()">Einloggen</button>
-        <button class="modal-cancel" onclick="closeModal('modal-login')">Abbrechen</button>
+        <div class="modal-sub">Enter your password and GitHub token to continue.</div>
+        <div class="modal-error" id="login-error">Wrong password.</div>
+        <input class="modal-field" type="password" id="owner-pw" placeholder="Password..." />
+        <input class="modal-field" type="password" id="owner-token" placeholder="GitHub Token (ghp_...)" onkeydown="if(event.key==='Enter')ownerLogin()" />
+        <button class="modal-btn" onclick="ownerLogin()">Login</button>
+        <button class="modal-cancel" onclick="closeModal('modal-login')">Cancel</button>
       </div>
     </div>
 
-    <!-- ── UPLOAD MODAL (nur Owner sieht es) ── -->
+    <!-- ── UPLOAD MODAL (owner only) ── -->
     <div class="modal-overlay" id="modal-upload">
       <div class="upload-modal-box">
-        <div class="modal-title">Sound hinzufügen</div>
-        <div class="modal-owner-badge">⚡ Owner Only</div>
+        <div class="modal-title">Add Sound</div>
+        <div class="modal-owner-badge">Owner Only</div>
 
         <div class="modal-row">
-          <label class="modal-label">Titel</label>
-          <input class="modal-field" type="text" id="up-title" placeholder="z.B. Roblox Oof" />
+          <label class="modal-label">Title</label>
+          <input class="modal-field" type="text" id="up-title" placeholder="e.g. Bruh Moment" />
         </div>
         <div class="modal-row">
-          <label class="modal-label">Beschreibung</label>
-          <input class="modal-field" type="text" id="up-desc" placeholder="Kurze Beschreibung..." />
+          <label class="modal-label">Description</label>
+          <input class="modal-field" type="text" id="up-desc" placeholder="Short description..." />
         </div>
         <div class="modal-row">
-          <label class="modal-label">VoiceMod Link</label>
-          <input class="modal-field" type="url" id="up-link" placeholder="https://www.voicemod.net/..." />
+          <label class="modal-label">VoiceMod Sound Link</label>
+          <input class="modal-field" type="url" id="up-link" placeholder="https://www.voicemod.net/sounds/..." />
         </div>
         <div class="modal-row">
-          <label class="modal-label">Kategorie</label>
-          <input class="modal-field" type="text" id="up-cat" placeholder="z.B. Meme, VOID, Classic" />
+          <label class="modal-label">VoiceMod Image URL</label>
+          <input class="modal-field" type="url" id="up-img" placeholder="https://images.voicemod.net/..." oninput="previewImg(this.value)" />
+          <!-- live preview -->
+          <div style="margin-top:8px;display:flex;align-items:center;gap:10px;">
+            <img id="up-img-preview" src="" alt="" style="width:44px;height:44px;border-radius:10px;object-fit:cover;border:1px solid var(--border);display:none;" />
+            <span id="up-img-status" style="font-size:.7rem;color:var(--muted2);"></span>
+          </div>
         </div>
         <div class="modal-row">
-          <label class="modal-label">Emoji</label>
-          <input class="modal-field" type="text" id="up-emoji" placeholder="🎵" maxlength="2" />
+          <label class="modal-label">Category</label>
+          <input class="modal-field" type="text" id="up-cat" placeholder="e.g. Meme, VOID, Classic" />
         </div>
         <div class="modal-row">
-          <label class="modal-label">Dauer (z.B. 0:05)</label>
+          <label class="modal-label">Duration (e.g. 0:05)</label>
           <input class="modal-field" type="text" id="up-dur" placeholder="0:05" />
         </div>
-        <div class="modal-error" id="upload-error">Bitte alle Felder ausfüllen.</div>
-        <button class="modal-btn" onclick="addSound()">Veröffentlichen</button>
-        <button class="modal-cancel" onclick="closeModal('modal-upload')">Abbrechen</button>
-        <button class="modal-cancel" style="margin-top:6px;color:#f87171;border-color:rgba(248,113,113,.2);" onclick="resetSounds()">Alle Sounds löschen</button>
+        <div class="modal-error" id="upload-error">Please fill in all required fields.</div>
+        <button class="modal-btn" onclick="addSound()">Publish</button>
+        <button class="modal-cancel" onclick="closeModal('modal-upload')">Cancel</button>
+        <button class="modal-cancel" style="margin-top:6px;color:#f87171;border-color:rgba(248,113,113,.2);" onclick="resetSounds()">Delete all sounds</button>
       </div>
     </div>
 
@@ -714,25 +723,29 @@
       openModal('modal-login');
     }
     function ownerLogin() {
-      const pw = document.getElementById('owner-pw').value;
-      if (pw === OWNER_PASSWORD) {
-        isOwner = true;
+      const pw    = document.getElementById('owner-pw').value;
+      const token = document.getElementById('owner-token').value.trim();
+      if (pw === OWNER_PASSWORD && token.startsWith('ghp_')) {
+        isOwner  = true;
+        GH_TOKEN = token;
         closeModal('modal-login');
-        document.getElementById('owner-add-btn').classList.add('visible');
-        document.getElementById('owner-logout').classList.add('visible');
+        const btn = document.getElementById('owner-add-btn-inline');
+        if (btn) btn.style.display = 'flex';
+        document.getElementById('owner-logout').style.display = 'inline';
         document.getElementById('owner-login-trigger').style.display = 'none';
-        showToast('✓  Owner Mode aktiv');
+        showToast('Owner mode active');
       } else {
+        document.getElementById('login-error').textContent = pw !== OWNER_PASSWORD ? 'Wrong password.' : 'Invalid token — must start with ghp_';
         document.getElementById('login-error').style.display = 'block';
-        document.getElementById('owner-pw').value = '';
-        document.getElementById('owner-pw').focus();
       }
     }
     function ownerLogout() {
-      isOwner = false;
-      document.getElementById('owner-add-btn').classList.remove('visible');
-      document.getElementById('owner-logout').classList.remove('visible');
-      document.getElementById('owner-login-trigger').style.display = '';
+      isOwner  = false;
+      GH_TOKEN = '';
+      const btn = document.getElementById('owner-add-btn-inline');
+      if (btn) btn.style.display = 'none';
+      document.getElementById('owner-logout').style.display = 'none';
+      document.getElementById('owner-login-trigger').style.display = 'inline';
     }
     function openModal(id)  { document.getElementById(id).classList.add('open'); }
     function closeModal(id) { document.getElementById(id).classList.remove('open'); }
@@ -743,40 +756,121 @@
     });
 
     // ════════════════════════════════════════
-    // ── SOUNDS DATA (localStorage persistent)
+    // ── GITHUB CONFIG
     // ════════════════════════════════════════
-    const STORAGE_KEY = 'void_sounds_v1';
-    // Leer — du fügst Sounds selbst als Owner hinzu
-    const DEFAULT_SOUNDS = [];
+    const GH_USER  = 'voidscriptsdiscord';
+    const GH_REPO  = 'VOIDScripts';
+    const GH_FILE  = 'sounds.json';
+    let   GH_TOKEN = ''; // set at runtime when owner logs in — never stored in code
 
-    function loadSounds() {
-      try { const r = localStorage.getItem(STORAGE_KEY); return r ? JSON.parse(r) : DEFAULT_SOUNDS; }
-      catch { return DEFAULT_SOUNDS; }
+    const GH_API = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`;
+
+    let SOUNDS  = [];
+    let GH_SHA  = ''; // needed for updating the file
+
+    // ── Load sounds from GitHub (public — no token needed) ──
+    async function loadSoundsFromGitHub() {
+      const grid  = document.getElementById('sounds-grid');
+      const empty = document.getElementById('sounds-empty');
+      grid.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted2);font-size:.8rem;">Loading sounds...</div>';
+      try {
+        // Use raw URL so no token needed for public repo
+        const res  = await fetch(`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/${GH_FILE}?t=` + Date.now());
+        SOUNDS = await res.json();
+        // Also fetch SHA for later writes
+        const meta = await fetch(GH_API);
+        const data = await meta.json();
+        GH_SHA = data.sha;
+        renderSounds(SOUNDS);
+      } catch(e) {
+        grid.innerHTML = '';
+        empty.style.display = 'block';
+      }
     }
-    function saveSounds(arr) { localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); }
-    let SOUNDS = loadSounds();
+
+    // ── Save sounds to GitHub (owner only) ──
+    async function saveSoundsToGitHub(arr) {
+      const content = btoa(unescape(encodeURIComponent(JSON.stringify(arr, null, 2))));
+      const res = await fetch(GH_API, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `token ${GH_TOKEN}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: 'Update sounds.json',
+          content,
+          sha: GH_SHA
+        })
+      });
+      if (!res.ok) throw new Error('GitHub save failed');
+      const data = await res.json();
+      GH_SHA = data.content.sha;
+    }
 
     // ── Upload Modal ──
+    // ── Image preview in upload modal ──
+    function previewImg(url) {
+      const img    = document.getElementById('up-img-preview');
+      const status = document.getElementById('up-img-status');
+      if (!url) { img.style.display='none'; status.textContent=''; return; }
+      img.src = url;
+      img.style.display = 'block';
+      img.onload  = () => { status.textContent = 'Image loaded'; status.style.color = '#4ade80'; };
+      img.onerror = () => { status.textContent = 'Could not load image'; status.style.color = '#f87171'; img.style.display='none'; };
+    }
+
     function openUploadModal() {
       if (!isOwner) return;
-      ['up-title','up-desc','up-link','up-cat','up-emoji','up-dur'].forEach(id => document.getElementById(id).value = '');
+      ['up-title','up-desc','up-link','up-img','up-cat','up-dur'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('upload-error').style.display = 'none';
+      document.getElementById('up-img-preview').style.display = 'none';
+      document.getElementById('up-img-status').textContent = '';
       openModal('modal-upload');
     }
-    function addSound() {
+
+    async function addSound() {
       if (!isOwner) return;
-      const title = document.getElementById('up-title').value.trim();
-      const desc  = document.getElementById('up-desc').value.trim();
-      const link  = document.getElementById('up-link').value.trim();
-      const cat   = document.getElementById('up-cat').value.trim();
-      const emoji = document.getElementById('up-emoji').value.trim() || '🎵';
-      const dur   = document.getElementById('up-dur').value.trim()   || '0:05';
+      const title    = document.getElementById('up-title').value.trim();
+      const desc     = document.getElementById('up-desc').value.trim();
+      const link     = document.getElementById('up-link').value.trim();
+      const imageUrl = document.getElementById('up-img').value.trim();
+      const cat      = document.getElementById('up-cat').value.trim();
+      const dur      = document.getElementById('up-dur').value.trim() || '0:05';
       if (!title || !link || !cat) { document.getElementById('upload-error').style.display = 'block'; return; }
-      SOUNDS.push({ name:title, desc:desc||'—', category:cat, emoji, voicemodUrl:link, duration:dur });
-      saveSounds(SOUNDS);
-      closeModal('modal-upload');
-      renderSounds(SOUNDS);
-      showToast('✓  Sound veröffentlicht');
+
+      const btn = document.querySelector('#modal-upload .modal-btn');
+      btn.textContent = 'Publishing...';
+      btn.disabled = true;
+
+      try {
+        SOUNDS.push({ name:title, desc:desc||'—', category:cat, imageUrl, voicemodUrl:link, duration:dur });
+        await saveSoundsToGitHub(SOUNDS);
+        closeModal('modal-upload');
+        renderSounds(SOUNDS);
+        showToast('Sound published — everyone can see it!');
+      } catch(e) {
+        SOUNDS.pop();
+        document.getElementById('upload-error').textContent = 'Save failed. Check your token.';
+        document.getElementById('upload-error').style.display = 'block';
+      } finally {
+        btn.textContent = 'Publish';
+        btn.disabled = false;
+      }
+    }
+
+    async function resetSounds() {
+      if (!isOwner) return;
+      if (!confirm('Delete ALL sounds? This cannot be undone.')) return;
+      try {
+        SOUNDS = [];
+        await saveSoundsToGitHub(SOUNDS);
+        closeModal('modal-upload');
+        renderSounds(SOUNDS);
+        showToast('All sounds deleted');
+      } catch(e) {
+        showToast('Error — could not delete sounds');
+      }
     }
 
     // ── Waveform bars ──
@@ -801,8 +895,11 @@
         card.innerHTML = `
           <div class="sound-card-top">
             <div class="sound-thumb">
-              <span class="sound-thumb-icon">${sound.emoji}</span>
-              <div class="eq-bars"><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div></div>
+              ${sound.imageUrl
+                ? `<img src="${sound.imageUrl}" alt="${sound.name}" style="width:100%;height:100%;object-fit:cover;border-radius:11px;position:absolute;inset:0;" />`
+                : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.4"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>`
+              }
+              <div class="eq-bars" style="position:absolute;"><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div></div>
             </div>
             <div class="sound-info">
               <div class="sound-name">${sound.name}</div>
@@ -902,22 +999,14 @@
 
     function setVolume() { /* future: real audio */ }
 
-    function resetSounds() {
-      if (!isOwner) return;
-      localStorage.removeItem(STORAGE_KEY);
-      SOUNDS = [];
-      closeModal('modal-upload');
-      renderSounds(SOUNDS);
-      showToast('✓  Alle Sounds gelöscht');
-    }
-
     // ── Search ──
     function filterSounds() {
       const q = document.getElementById('sounds-search').value.toLowerCase().trim();
       renderSounds(q ? SOUNDS.filter(s => s.name.toLowerCase().includes(q)||s.category.toLowerCase().includes(q)||s.desc.toLowerCase().includes(q)) : SOUNDS);
     }
 
-    renderSounds(SOUNDS);
+    // Initial load from GitHub
+    loadSoundsFromGitHub();
 
     // ════════════════════════════════════════
     // ── Tab Switching ──
